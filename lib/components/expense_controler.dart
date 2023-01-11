@@ -5,9 +5,10 @@ import '../utils/db_util.dart';
 class ExpenseController extends StatefulWidget {
   final String expenseName;
   final double initialValueAlocated;
-  // final Function AddNewController;
+  final Function(String) deleteController;
 
-  ExpenseController(this.expenseName, this.initialValueAlocated);
+  ExpenseController(
+      this.expenseName, this.initialValueAlocated, this.deleteController);
 
   @override
   State<ExpenseController> createState() =>

@@ -25,6 +25,7 @@ class _ExpensesListState extends State<ExpensesList> {
           (item) => ExpenseController(
             item[DbUtil.expenseNameKey],
             item[DbUtil.availableValueKey],
+            _deleteExpenseController,
           ),
         )
         .toList();
@@ -32,7 +33,8 @@ class _ExpensesListState extends State<ExpensesList> {
 
   _addExpenseController(String title, double value) {
     setState(() {
-      final newExpenseSource = ExpenseController(title, value);
+      final newExpenseSource =
+          ExpenseController(title, value, _deleteExpenseController);
       _expenses.add(newExpenseSource);
     });
 
@@ -40,6 +42,14 @@ class _ExpensesListState extends State<ExpensesList> {
       DbUtil.expenseNameKey: title,
       DbUtil.availableValueKey: value,
     });
+  }
+
+  _deleteExpenseController(String title) {
+    setState(() {
+      _expenses.removeWhere((element) => element.expenseName == title);
+    });
+
+    DbUtil.delete(DbUtil.tableName, title);
   }
 
   _openFormModal(BuildContext context) {
