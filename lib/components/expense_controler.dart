@@ -59,8 +59,20 @@ class _ExpenseControllerState extends State<ExpenseController> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(widget.expenseName),
-        Text(currentValueAvailable.toString()),
+        Text(
+          widget.expenseName,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        Text(
+          currentValueAvailable.toString(),
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
         ElevatedButton(
           onPressed: () => _openUpdateExpenseForm(context),
           child: Text("Novo gasto"),
