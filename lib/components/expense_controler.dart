@@ -38,6 +38,23 @@ class _ExpenseControllerState extends State<ExpenseController> {
     );
   }
 
+  _openDeteleForm(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (_) {
+        return Column(
+          children: [
+            Text('Tem certeza de que quer apagar esta fonte de gastos?'),
+            ElevatedButton(
+              child: const Text('Sim'),
+              onPressed: () => widget.deleteController(widget.expenseName),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -50,7 +67,7 @@ class _ExpenseControllerState extends State<ExpenseController> {
           child: Text("Novo gasto"),
         ),
         ElevatedButton(
-          onPressed: () => null,
+          onPressed: () => _openDeteleForm(context),
           child: Icon(Icons.delete_outline),
         ),
       ],
