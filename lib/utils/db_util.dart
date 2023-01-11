@@ -52,16 +52,6 @@ class DbUtil {
     print(list);
   }
 
-  static Future<List<ExpenseController>> loadSavedExpenses() async {
-    final dataList = await DbUtil.getData(tableName);
 
-    return dataList
-        .map(
-          (item) => ExpenseController(
-            item[expenseNameKey],
-            item[availableValueKey],
-          ),
-        )
-        .toList();
   }
 }
