@@ -52,6 +52,10 @@ class DbUtil {
     print(list);
   }
 
+  static Future<void> delete(String table, String expenseName) async {
+    final db = await DbUtil.database();
 
+    await db.rawDelete(
+        'DELETE FROM $tableName WHERE $expenseNameKey = ?', [expenseName]);
   }
 }
