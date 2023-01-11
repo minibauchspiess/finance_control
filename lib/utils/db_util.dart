@@ -9,11 +9,9 @@ class DbUtil {
 
   static Future<sql.Database> database() async {
     final dbPath = await sql.getDatabasesPath();
-    print('opening db');
     return sql.openDatabase(
       path.join(dbPath, '$tableName.db'),
       onCreate: (db, version) {
-        print("Created database");
         return db.execute(
             'CREATE TABLE $tableName ($expenseNameKey TEXT PRIMARY KEY, $availableValueKey REAL)');
       },
@@ -29,10 +27,6 @@ class DbUtil {
       data,
       conflictAlgorithm: sql.ConflictAlgorithm.replace,
     );
-
-    List<Map> list = await db.rawQuery('SELECT * FROM $tableName');
-    print("Lista de valores");
-    print(list);
   }
 
   static Future<List<Map<String, dynamic>>> getData(String table) async {
@@ -46,10 +40,6 @@ class DbUtil {
     await db.rawUpdate(
         'UPDATE $tableName SET $availableValueKey = ? WHERE $expenseNameKey = ?',
         [newValue, expenseName]);
-
-    List<Map> list = await db.rawQuery('SELECT * FROM $tableName');
-    print("Atualizando valores");
-    print(list);
   }
 
   static Future<void> delete(String table, String expenseName) async {

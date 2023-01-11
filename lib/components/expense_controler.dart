@@ -23,7 +23,6 @@ class _ExpenseControllerState extends State<ExpenseController> {
   _updateCurrentValue(double changesToValue) {
     setState(() {
       currentValueAvailable -= changesToValue;
-      print(currentValueAvailable);
     });
 
     DbUtil.updateAvailableValue(widget.expenseName, currentValueAvailable);
