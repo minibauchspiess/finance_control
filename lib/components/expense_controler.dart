@@ -21,8 +21,10 @@ class _ExpenseControllerState extends State<ExpenseController> {
   _ExpenseControllerState(this.currentValueAvailable);
 
   _updateCurrentValue(double changesToValue) {
+    double newValue = currentValueAvailable - changesToValue;
+    newValue = (newValue * 100).round().toDouble() / 100;
     setState(() {
-      currentValueAvailable -= changesToValue;
+      currentValueAvailable = newValue;
     });
 
     DbUtil.updateAvailableValue(widget.expenseName, currentValueAvailable);
