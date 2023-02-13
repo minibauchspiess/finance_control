@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'update_expense_form.dart';
 import '../utils/db_util.dart';
+import '../models/expense.dart';
 
 class ExpenseController extends StatefulWidget {
   final String expenseName;
@@ -11,20 +12,22 @@ class ExpenseController extends StatefulWidget {
       this.expenseName, this.initialValueAlocated, this.deleteController);
 
   @override
-  State<ExpenseController> createState() =>
-      _ExpenseControllerState(initialValueAlocated);
+  State<ExpenseController> createState() => _ExpenseControllerState(
+      Expense(expenseName, initialValueAlocated, initialValueAlocated));
 }
 
 class _ExpenseControllerState extends State<ExpenseController> {
-  double currentValueAvailable;
+  Expense expense = Expense("", 0.0, 0.0);
 
-  _ExpenseControllerState(this.currentValueAvailable);
+  _ExpenseControllerState(Expense expenseData) {
+    expense = expenseData;
+  }
 
   _updateCurrentValue(double changesToValue) {
-    double newValue = currentValueAvailable - changesToValue;
+    double newValue = expense.currentValue - changesToValue;
     newValue = (newValue * 100).round().toDouble() / 100;
     setState(() {
-      currentValueAvailable = newValue;
+      expense.setCurrentValue(newValue);
     });
 
     DbUtil.updateAvailableValue(widget.expenseName, currentValueAvailable);
@@ -69,7 +72,7 @@ class _ExpenseControllerState extends State<ExpenseController> {
           ),
         ),
         Text(
-          currentValueAvailable.toString(),
+          expense.currentValue.toString(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,
