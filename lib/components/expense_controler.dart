@@ -4,30 +4,23 @@ import '../utils/db_util.dart';
 import '../models/expense.dart';
 
 class ExpenseController extends StatefulWidget {
-  final String expenseName;
-  final double initialValueAlocated;
+  Expense expense;
   final Function(String) deleteController;
 
-  ExpenseController(
-      this.expenseName, this.initialValueAlocated, this.deleteController);
+  ExpenseController(this.expense, this.deleteController);
 
   @override
-  State<ExpenseController> createState() => _ExpenseControllerState(
-      Expense(expenseName, initialValueAlocated, initialValueAlocated));
+  State<ExpenseController> createState() => _ExpenseControllerState();
 }
 
 class _ExpenseControllerState extends State<ExpenseController> {
-  Expense expense = Expense("", 0.0, 0.0);
-
-  _ExpenseControllerState(Expense expenseData) {
-    expense = expenseData;
-  }
+  _ExpenseControllerState();
 
   _updateCurrentValue(double changesToValue) {
-    double newValue = expense.currentValue - changesToValue;
+    double newValue = widget.expense.currentValue - changesToValue;
     newValue = (newValue * 100).round().toDouble() / 100;
     setState(() {
-      expense.setCurrentValue(newValue);
+      widget.expense.setCurrentValue(newValue);
     });
 
     DbUtil.updateAvailableValue(widget.expenseName, currentValueAvailable);
@@ -51,7 +44,8 @@ class _ExpenseControllerState extends State<ExpenseController> {
             Text('Tem certeza de que quer apagar esta fonte de gastos?'),
             ElevatedButton(
               child: const Text('Sim'),
-              onPressed: () => widget.deleteController(widget.expenseName),
+              onPressed: () =>
+                  widget.deleteController(widget.expense.expenseName),
             ),
           ],
         );
@@ -65,14 +59,16 @@ class _ExpenseControllerState extends State<ExpenseController> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          widget.expenseName,
+          widget.expense.expenseName,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
           ),
         ),
         Text(
-          expense.currentValue.toString(),
+          widget.expense.currentValue.toString() +
+              "/" +
+              widget.expense.initialValue.toString(),
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 18,

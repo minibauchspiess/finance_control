@@ -19,6 +19,10 @@ class Expense {
     _currentValue = currentValue;
   }
 
+  String get expenseName {
+    return _expenseName;
+  }
+
   double get initialValue {
     return _initialValue;
   }

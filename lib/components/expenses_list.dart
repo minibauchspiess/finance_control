@@ -33,8 +33,8 @@ class _ExpensesListState extends State<ExpensesList> {
 
   _addExpenseController(String title, double value) {
     setState(() {
-      final newExpenseSource =
-          ExpenseController(title, value, _deleteExpenseController);
+      final newExpenseSource = ExpenseController(
+          Expense(title, value, value), _deleteExpenseController);
       _expenses.add(newExpenseSource);
     });
 
@@ -46,7 +46,7 @@ class _ExpensesListState extends State<ExpensesList> {
 
   _deleteExpenseController(String title) {
     setState(() {
-      _expenses.removeWhere((element) => element.expenseName == title);
+      _expenses.removeWhere((element) => element.expense.expenseName == title);
     });
 
     DbUtil.delete(DbUtil.tableName, title);
