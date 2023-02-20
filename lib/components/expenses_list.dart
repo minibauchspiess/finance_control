@@ -3,9 +3,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/container.dart';
 
 import 'expense_controler.dart';
-import '../utils/db_util.dart';
+import '../utils/expenses_data_base_handler.dart';
 import 'package:flutter/material.dart';
 import 'new_expense_form.dart';
+import '../models/expense.dart';
 
 class ExpensesList extends StatefulWidget {
   const ExpensesList({super.key});
@@ -16,32 +17,28 @@ class ExpensesList extends StatefulWidget {
 
 class _ExpensesListState extends State<ExpensesList> {
   List<ExpenseController> _expenses = [];
+  bool loaded = false;
 
   Future<void> loadExpenses() async {
-    final dataList = await DbUtil.getData('ExpensesSources');
+    final testeList = await ExpensesDb.getExpenseList();
 
-    _expenses = dataList
-        .map(
-          (item) => ExpenseController(
-            item[DbUtil.expenseNameKey],
-            item[DbUtil.availableValueKey],
-            _deleteExpenseController,
-          ),
-        )
-        .toList();
+    if (!loaded) {
+      testeList.forEach((expense) {
+        _expenses.add(ExpenseController(expense, _deleteExpenseController));
+      });
+      loaded = true;
+    }
   }
 
   _addExpenseController(String title, double value) {
+    Expense newExpense = Expense(title, value, value);
     setState(() {
-      final newExpenseSource = ExpenseController(
-          Expense(title, value, value), _deleteExpenseController);
+      final newExpenseSource =
+          ExpenseController(newExpense, _deleteExpenseController);
       _expenses.add(newExpenseSource);
     });
 
-    DbUtil.insert(DbUtil.tableName, {
-      DbUtil.expenseNameKey: title,
-      DbUtil.availableValueKey: value,
-    });
+    ExpensesDb.insertExpense(newExpense);
   }
 
   _deleteExpenseController(String title) {
@@ -49,7 +46,7 @@ class _ExpensesListState extends State<ExpensesList> {
       _expenses.removeWhere((element) => element.expense.expenseName == title);
     });
 
-    DbUtil.delete(DbUtil.tableName, title);
+    ExpensesDb.deleteExpense(title);
   }
 
   _openFormModal(BuildContext context) {

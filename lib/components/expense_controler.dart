@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'update_expense_form.dart';
-import '../utils/db_util.dart';
+import '../utils/expenses_data_base_handler.dart';
 import '../models/expense.dart';
 
 class ExpenseController extends StatefulWidget {
@@ -23,7 +23,7 @@ class _ExpenseControllerState extends State<ExpenseController> {
       widget.expense.setCurrentValue(newValue);
     });
 
-    DbUtil.updateAvailableValue(widget.expenseName, currentValueAvailable);
+    ExpensesDb.updateExpense(widget.expense);
   }
 
   _openUpdateExpenseForm(BuildContext context) {
