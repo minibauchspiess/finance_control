@@ -1,3 +1,4 @@
+import 'package:finance_control/components/expense_bar.dart';
 import 'package:flutter/material.dart';
 import 'update_expense_form.dart';
 import '../utils/expenses_data_base_handler.dart';
@@ -60,7 +61,7 @@ class _ExpenseControllerState extends State<ExpenseController> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
-          flex: 3,
+          flex: 5,
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
@@ -72,24 +73,25 @@ class _ExpenseControllerState extends State<ExpenseController> {
             ),
           ),
         ),
-        Expanded(
-          flex: 5,
-          child: Text(
-            "${widget.expense.currentValue}/${widget.expense.initialValue}",
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 18,
-            ),
-          ),
+        const SizedBox(
+          width: 10,
         ),
         Expanded(
-          flex: 1,
+          flex: 8,
+          child: ExpenseBar(
+              widget.expense.currentValue, widget.expense.initialValue),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          flex: 2,
           child: ElevatedButton(
             onPressed: () => _openUpdateExpenseForm(context),
             // child: Text("Gasto"),
             style: ButtonStyle(
               alignment: Alignment.center,
-              padding: MaterialStateProperty.all(const EdgeInsets.all(10)),
+              padding: MaterialStateProperty.all(const EdgeInsets.all(5)),
             ),
             child: const Text("-\$"),
           ),
@@ -98,15 +100,18 @@ class _ExpenseControllerState extends State<ExpenseController> {
           width: 10,
         ),
         Expanded(
-          flex: 1,
+          flex: 2,
           child: ElevatedButton(
             onPressed: () => _openDeteleForm(context),
             style: ButtonStyle(
               alignment: Alignment.center,
-              padding: MaterialStateProperty.all(const EdgeInsets.all(10)),
+              padding: MaterialStateProperty.all(const EdgeInsets.all(5)),
             ),
             child: const Icon(Icons.delete_outline),
           ),
+        ),
+        const SizedBox(
+          width: 10,
         ),
       ],
     );
