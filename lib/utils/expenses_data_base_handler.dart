@@ -47,9 +47,27 @@ class ExpensesDb {
     );
   }
 
+  static Future<void> insertExpense(Expense expense) async {
+    final db = await ExpensesDb._getDatabase();
+
+    await db.rawInsert(
+        'INSERT INTO $tableName($expenseNameKey, $initialValueKey, $availableValueKey) VALUES(?, ?, ?)',
+        [expense.expenseName, expense.initialValue, expense.currentValue]);
+  }
+
   static Future<List<Map<String, dynamic>>> getData(String table) async {
     final db = await ExpensesDb._getDatabase();
     return db.query(table);
+  }
+
+  static Future<List<Expense>> getExpenseList() async {
+    final db = await ExpensesDb._getDatabase();
+    final dbData = await db.query(tableName);
+
+    return dbData
+        .map((row) => Expense(row[expenseNameKey].toString(),
+            row[initialValueKey] as double, row[availableValueKey] as double))
+        .toList();
   }
 
   static Future<List<Map<String, dynamic>>> getSingleData(
@@ -68,7 +86,21 @@ class ExpensesDb {
         [newValue, expenseName]);
   }
 
+  static Future<void> updateExpense(Expense expense) async {
+    final db = await _getDatabase();
+    await db.rawUpdate(
+        'UPDATE $tableName SET $availableValueKey = ? WHERE $expenseNameKey = ?',
+        [expense.currentValue, expense.expenseName]);
+  }
+
   static Future<void> delete(String table, String expenseName) async {
+    final db = await ExpensesDb._getDatabase();
+
+    await db.rawDelete(
+        'DELETE FROM $tableName WHERE $expenseNameKey = ?', [expenseName]);
+  }
+
+  static Future<void> deleteExpense(String expenseName) async {
     final db = await ExpensesDb._getDatabase();
 
     await db.rawDelete(
