@@ -69,7 +69,14 @@ class _ExpensesListState extends State<ExpensesList> {
           builder: (ctx, snapshot) =>
               snapshot.connectionState == ConnectionState.waiting
                   ? const Center(child: CircularProgressIndicator())
-                  : Column(children: _expenses),
+                  : Container(
+                      height: 580,
+                      child: ListView.builder(
+                          itemCount: _expenses.length,
+                          itemBuilder: (ctx, index) {
+                            return _expenses[index];
+                          }),
+                    ),
         ),
         Center(
           child: FloatingActionButton(
