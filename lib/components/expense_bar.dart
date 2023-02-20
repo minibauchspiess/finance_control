@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 
 class ExpenseBar extends StatelessWidget {
-  final double currentValue;
+  late double currentValue;
   final double maxValue;
+  late Color barColor;
 
-  ExpenseBar(
-    this.currentValue,
-    this.maxValue,
-  );
+  ExpenseBar(this.currentValue, this.maxValue) {
+    if (currentValue < 0) {
+      barColor = Colors.red;
+      currentValue = -currentValue;
+    } else {
+      barColor = Colors.blue;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +39,11 @@ class ExpenseBar extends StatelessWidget {
                 ),
               ),
               FractionallySizedBox(
-                widthFactor: currentValue / maxValue,
+                widthFactor:
+                    currentValue < maxValue ? currentValue / maxValue : 1,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
+                    color: barColor,
                     borderRadius: BorderRadius.circular(5),
                   ),
                 ),
