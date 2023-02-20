@@ -20,12 +20,13 @@ class _ExpensesListState extends State<ExpensesList> {
   bool loaded = false;
 
   Future<void> loadExpenses() async {
-    final testeList = await ExpensesDb.getExpenseList();
+    final expensesList = await ExpensesDb.getExpenseList();
 
     if (!loaded) {
-      testeList.forEach((expense) {
+      for (var expense in expensesList) {
         _expenses.add(ExpenseController(expense, _deleteExpenseController));
-      });
+      }
+      ;
       loaded = true;
     }
   }
@@ -69,7 +70,7 @@ class _ExpensesListState extends State<ExpensesList> {
           builder: (ctx, snapshot) =>
               snapshot.connectionState == ConnectionState.waiting
                   ? const Center(child: CircularProgressIndicator())
-                  : Container(
+                  : SizedBox(
                       height: 580,
                       child: ListView.builder(
                           itemCount: _expenses.length,
@@ -81,7 +82,7 @@ class _ExpensesListState extends State<ExpensesList> {
         Center(
           child: FloatingActionButton(
             onPressed: () => _openFormModal(context),
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
         )
       ],

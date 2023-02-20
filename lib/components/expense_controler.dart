@@ -41,7 +41,7 @@ class _ExpenseControllerState extends State<ExpenseController> {
       builder: (_) {
         return Column(
           children: [
-            Text('Tem certeza de que quer apagar esta fonte de gastos?'),
+            const Text('Tem certeza de que quer apagar esta fonte de gastos?'),
             ElevatedButton(
               child: const Text('Sim'),
               onPressed: () =>
@@ -75,9 +75,7 @@ class _ExpenseControllerState extends State<ExpenseController> {
         Expanded(
           flex: 5,
           child: Text(
-            widget.expense.currentValue.toString() +
-                "/" +
-                widget.expense.initialValue.toString(),
+            "${widget.expense.currentValue}/${widget.expense.initialValue}",
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 18,
@@ -89,25 +87,25 @@ class _ExpenseControllerState extends State<ExpenseController> {
           child: ElevatedButton(
             onPressed: () => _openUpdateExpenseForm(context),
             // child: Text("Gasto"),
-            child: Text("-\$"),
             style: ButtonStyle(
               alignment: Alignment.center,
-              padding: MaterialStateProperty.all(EdgeInsets.all(10)),
+              padding: MaterialStateProperty.all(const EdgeInsets.all(10)),
             ),
+            child: const Text("-\$"),
           ),
         ),
-        SizedBox(
+        const SizedBox(
           width: 10,
         ),
         Expanded(
           flex: 1,
           child: ElevatedButton(
             onPressed: () => _openDeteleForm(context),
-            child: Icon(Icons.delete_outline),
             style: ButtonStyle(
               alignment: Alignment.center,
-              padding: MaterialStateProperty.all(EdgeInsets.all(10)),
+              padding: MaterialStateProperty.all(const EdgeInsets.all(10)),
             ),
+            child: const Icon(Icons.delete_outline),
           ),
         ),
       ],
