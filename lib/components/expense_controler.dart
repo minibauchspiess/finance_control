@@ -76,7 +76,7 @@ class _ExpenseControllerState extends State<ExpenseController> {
         ),
         ElevatedButton(
           onPressed: () => _openUpdateExpenseForm(context),
-          child: Text("Novo gasto"),
+            child: Text("-\$"),
         ),
         ElevatedButton(
           onPressed: () => _openDeteleForm(context),
