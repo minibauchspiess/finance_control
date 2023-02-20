@@ -56,31 +56,59 @@ class _ExpenseControllerState extends State<ExpenseController> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          widget.expense.expenseName,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+        Expanded(
+          flex: 3,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              widget.expense.expenseName,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  overflow: TextOverflow.visible),
+            ),
           ),
         ),
-        Text(
-          widget.expense.currentValue.toString() +
-              "/" +
-              widget.expense.initialValue.toString(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
+        Expanded(
+          flex: 5,
+          child: Text(
+            widget.expense.currentValue.toString() +
+                "/" +
+                widget.expense.initialValue.toString(),
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
           ),
         ),
-        ElevatedButton(
-          onPressed: () => _openUpdateExpenseForm(context),
+        Expanded(
+          flex: 1,
+          child: ElevatedButton(
+            onPressed: () => _openUpdateExpenseForm(context),
+            // child: Text("Gasto"),
             child: Text("-\$"),
+            style: ButtonStyle(
+              alignment: Alignment.center,
+              padding: MaterialStateProperty.all(EdgeInsets.all(10)),
+            ),
+          ),
         ),
-        ElevatedButton(
-          onPressed: () => _openDeteleForm(context),
-          child: Icon(Icons.delete_outline),
+        SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          flex: 1,
+          child: ElevatedButton(
+            onPressed: () => _openDeteleForm(context),
+            child: Icon(Icons.delete_outline),
+            style: ButtonStyle(
+              alignment: Alignment.center,
+              padding: MaterialStateProperty.all(EdgeInsets.all(10)),
+            ),
+          ),
         ),
       ],
     );
