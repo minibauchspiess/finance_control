@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../utils/db_util.dart';
+import '../utils/expenses_data_base_handler.dart';
 
 class UpdateExpenseForm extends StatefulWidget {
   final Function(double) onSubmit;

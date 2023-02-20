@@ -3,9 +3,10 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/container.dart';
 
 import 'expense_controler.dart';
-import '../utils/db_util.dart';
+import '../utils/expenses_data_base_handler.dart';
 import 'package:flutter/material.dart';
 import 'new_expense_form.dart';
+import '../models/expense.dart';
 
 class ExpensesList extends StatefulWidget {
   const ExpensesList({super.key});
@@ -16,40 +17,37 @@ class ExpensesList extends StatefulWidget {
 
 class _ExpensesListState extends State<ExpensesList> {
   List<ExpenseController> _expenses = [];
+  bool loaded = false;
 
   Future<void> loadExpenses() async {
-    final dataList = await DbUtil.getData('ExpensesSources');
+    final expensesList = await ExpensesDb.getExpenseList();
 
-    _expenses = dataList
-        .map(
-          (item) => ExpenseController(
-            item[DbUtil.expenseNameKey],
-            item[DbUtil.availableValueKey],
-            _deleteExpenseController,
-          ),
-        )
-        .toList();
+    if (!loaded) {
+      for (var expense in expensesList) {
+        _expenses.add(ExpenseController(expense, _deleteExpenseController));
+      }
+      ;
+      loaded = true;
+    }
   }
 
   _addExpenseController(String title, double value) {
+    Expense newExpense = Expense(title, value, value);
     setState(() {
       final newExpenseSource =
-          ExpenseController(title, value, _deleteExpenseController);
+          ExpenseController(newExpense, _deleteExpenseController);
       _expenses.add(newExpenseSource);
     });
 
-    DbUtil.insert(DbUtil.tableName, {
-      DbUtil.expenseNameKey: title,
-      DbUtil.availableValueKey: value,
-    });
+    ExpensesDb.insertExpense(newExpense);
   }
 
   _deleteExpenseController(String title) {
     setState(() {
-      _expenses.removeWhere((element) => element.expenseName == title);
+      _expenses.removeWhere((element) => element.expense.expenseName == title);
     });
 
-    DbUtil.delete(DbUtil.tableName, title);
+    ExpensesDb.deleteExpense(title);
   }
 
   _openFormModal(BuildContext context) {
@@ -72,12 +70,19 @@ class _ExpensesListState extends State<ExpensesList> {
           builder: (ctx, snapshot) =>
               snapshot.connectionState == ConnectionState.waiting
                   ? const Center(child: CircularProgressIndicator())
-                  : Column(children: _expenses),
+                  : SizedBox(
+                      height: 580,
+                      child: ListView.builder(
+                          itemCount: _expenses.length,
+                          itemBuilder: (ctx, index) {
+                            return _expenses[index];
+                          }),
+                    ),
         ),
         Center(
           child: FloatingActionButton(
             onPressed: () => _openFormModal(context),
-            child: Icon(Icons.add),
+            child: const Icon(Icons.add),
           ),
         )
       ],

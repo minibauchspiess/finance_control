@@ -1,31 +1,30 @@
+import 'package:finance_control/components/expense_bar.dart';
 import 'package:flutter/material.dart';
 import 'update_expense_form.dart';
-import '../utils/db_util.dart';
+import '../utils/expenses_data_base_handler.dart';
+import '../models/expense.dart';
 
 class ExpenseController extends StatefulWidget {
-  final String expenseName;
-  final double initialValueAlocated;
+  Expense expense;
   final Function(String) deleteController;
 
-  ExpenseController(
-      this.expenseName, this.initialValueAlocated, this.deleteController);
+  ExpenseController(this.expense, this.deleteController);
 
   @override
-  State<ExpenseController> createState() =>
-      _ExpenseControllerState(initialValueAlocated);
+  State<ExpenseController> createState() => _ExpenseControllerState();
 }
 
 class _ExpenseControllerState extends State<ExpenseController> {
-  double currentValueAvailable;
-
-  _ExpenseControllerState(this.currentValueAvailable);
+  _ExpenseControllerState();
 
   _updateCurrentValue(double changesToValue) {
+    double newValue = widget.expense.currentValue - changesToValue;
+    newValue = (newValue * 100).round().toDouble() / 100;
     setState(() {
-      currentValueAvailable -= changesToValue;
+      widget.expense.setCurrentValue(newValue);
     });
 
-    DbUtil.updateAvailableValue(widget.expenseName, currentValueAvailable);
+    ExpensesDb.updateExpense(widget.expense);
   }
 
   _openUpdateExpenseForm(BuildContext context) {
@@ -43,10 +42,11 @@ class _ExpenseControllerState extends State<ExpenseController> {
       builder: (_) {
         return Column(
           children: [
-            Text('Tem certeza de que quer apagar esta fonte de gastos?'),
+            const Text('Tem certeza de que quer apagar esta fonte de gastos?'),
             ElevatedButton(
               child: const Text('Sim'),
-              onPressed: () => widget.deleteController(widget.expenseName),
+              onPressed: () =>
+                  widget.deleteController(widget.expense.expenseName),
             ),
           ],
         );
@@ -57,29 +57,61 @@ class _ExpenseControllerState extends State<ExpenseController> {
   @override
   Widget build(BuildContext context) {
     return Row(
+      mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(
-          widget.expenseName,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
+        Expanded(
+          flex: 5,
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              widget.expense.expenseName,
+              style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                  overflow: TextOverflow.visible),
+            ),
           ),
         ),
-        Text(
-          currentValueAvailable.toString(),
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 18,
+        const SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          flex: 8,
+          child: ExpenseBar(
+              widget.expense.currentValue, widget.expense.initialValue),
+        ),
+        const SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          flex: 2,
+          child: ElevatedButton(
+            onPressed: () => _openUpdateExpenseForm(context),
+            // child: Text("Gasto"),
+            style: ButtonStyle(
+              alignment: Alignment.center,
+              padding: MaterialStateProperty.all(const EdgeInsets.all(5)),
+            ),
+            child: const Text("-\$"),
           ),
         ),
-        ElevatedButton(
-          onPressed: () => _openUpdateExpenseForm(context),
-          child: Text("Novo gasto"),
+        const SizedBox(
+          width: 10,
         ),
-        ElevatedButton(
-          onPressed: () => _openDeteleForm(context),
-          child: Icon(Icons.delete_outline),
+        Expanded(
+          flex: 2,
+          child: ElevatedButton(
+            onPressed: () => _openDeteleForm(context),
+            style: ButtonStyle(
+              alignment: Alignment.center,
+              padding: MaterialStateProperty.all(const EdgeInsets.all(5)),
+            ),
+            child: const Icon(Icons.delete_outline),
+          ),
+        ),
+        const SizedBox(
+          width: 10,
         ),
       ],
     );
